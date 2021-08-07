@@ -1,0 +1,17 @@
+---
+output: github_document
+bibliography: [./inst/REFERENCES.bib]
+biblio-style: apalike
+link-citations: yes
+editor_options: 
+  canonical: true
+  markdown: 
+    wrap: 80
+    references: 
+      location: section
+---
+
+```{r setup, echo = FALSE, results = 'hide', message = FALSE, warning = FALSE}
+source(file.path(usethis::proj_get(), "vignettes",  "_common.R"))
+```
+

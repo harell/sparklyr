@@ -1,0 +1,16 @@
+services:
+  ######################################################
+  # R Testing
+  ######################################################
+  r-test:
+    image: r-package/sparklyr
+    build:
+      context: ./
+      dockerfile: ./.dev/docker/r-test/Dockerfile
+      args:
+        - SPARK_VERSION=2.4.0
+    entrypoint: '/bin/bash'
+    container_name: r_test
+    restart: "no"
+  ######################################################
+version: "3.8"
