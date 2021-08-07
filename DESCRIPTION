@@ -1,6 +1,6 @@
 Package: sparklyr.playground
 Type: Package
-Title: Playground for sparklyr
+Title: Apache Spark in R
 Description: Playground for sparklyr.
 URL: https://github.com/harell/sparklyr
 Version: 0.1.0

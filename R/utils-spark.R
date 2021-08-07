@@ -1,6 +1,8 @@
-#' @noRd
+#' @title Spark Utility Functions
 #' @keywords internal
 #' @export
+#' @examples
+#' ls(spark)
 spark <- new.env()
 
 

@@ -4,14 +4,14 @@ FROM tidylab/package:4.2.0
 # Install Spark ----------------------------------------------------------------
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     r-base-dev \
-    default-jdk \
+    openjdk-8-jdk-headless \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN R CMD javareconf
 RUN R -q -e "install_cran('sparklyr', dependencies = TRUE)"
 ARG SPARK_VERSION=2.3.0
 RUN R -q -e "print(Sys.getenv('SPARK_VERSION'))"
 #RUN R -q -e "if(!identical(sparklyr::spark_installed_versions()[[1]], Sys.getenv('SPARK_VERSION'))) sparklyr::spark_install(version = Sys.getenv('SPARK_VERSION'))"
-RUN R -q -e "if(!identical(sparklyr::spark_installed_versions()[[1]], '2.3.0')) sparklyr::spark_install(version = '2.3.0')"
+#RUN R -q -e "if(!identical(sparklyr::spark_installed_versions()[[1]], '2.3.0')) sparklyr::spark_install(version = '2.3.0', verbose = TRUE)"
 
 # Install Project Dependencies -------------------------------------------------
 COPY ./DESCRIPTION ./DESCRIPTION
