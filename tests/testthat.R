@@ -1,4 +1,4 @@
 library(testthat)
-library(usethis2)
+library(sparklyr.playground)
 
-test_check("usethis2")
+test_check("sparklyr.playground")
