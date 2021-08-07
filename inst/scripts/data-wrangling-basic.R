@@ -15,8 +15,6 @@ tbl_spark <- dplyr::copy_to(spark_conn, mtcars, overwrite = TRUE)
 ## List the data frames available in Spark
 dplyr::src_tbls(spark_conn)
 
-
-# Measure object size and dimensions: Large in Spark, Small in R session --
 ## See how big the dataset is
 dim(tbl_spark)
 
