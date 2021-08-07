@@ -35,6 +35,18 @@ str(tbl_spark)
 dplyr::glimpse(tbl_spark)
 
 
-# Selecting columns -------------------------------------------------------
+# dplyr commands ----------------------------------------------------------
+## Selecting columns
+tbl_spark |> dplyr::select(mpg)
 
+## Filtering rows
+tbl_spark |> dplyr::filter(gear == 4)
 
+## Arranging rows
+tbl_spark |> dplyr::arrange(mpg)
+
+## Mutating columns
+tbl_spark |> dplyr::mutate(kpg = 1.60934 * mpg)
+
+## Summarising columns
+tbl_spark |> dplyr::group_by(gear) |> dplyr::summarise(mpg = mean(mpg, na.rm = TRUE))
