@@ -48,3 +48,8 @@ tbl_spark |> dplyr::mutate(kpg = 1.60934 * mpg)
 
 ## Summarising columns
 tbl_spark |> dplyr::group_by(gear) |> dplyr::summarise(mpg = mean(mpg, na.rm = TRUE))
+
+
+# Teardown ----------------------------------------------------------------
+sparklyr::spark_disconnect(sc = spark_conn)
+
