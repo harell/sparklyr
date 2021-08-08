@@ -1,5 +1,20 @@
 services:
   ######################################################
+  ## Spark
+  ######################################################
+  spark:
+    image: spark/livy
+    container_name: spark-master
+    build:
+      context: ./
+      dockerfile: ./.dev/docker/spark/Dockerfile
+    environment:
+      - SPARK_VERSION=2.4.4
+      - HADOOP_VERSION=2.7
+    ports:
+      - 8998:8998
+    restart: "no"
+  ######################################################
   # R Testing
   ######################################################
   r-test:
@@ -8,9 +23,12 @@ services:
       context: ./
       dockerfile: ./.dev/docker/r-test/Dockerfile
       args:
-        - SPARK_VERSION=2.4.0
+        - SPARK_VERSION=2.4.4
+        - HADOOP_VERSION=2.7
     entrypoint: '/bin/bash'
     container_name: r_test
-    restart: "no"
+    restart: "always"
+#    depends_on:
+#      - spark
   ######################################################
 version: "3.8"

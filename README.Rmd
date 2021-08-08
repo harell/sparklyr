@@ -15,3 +15,6 @@ editor_options:
 source(file.path(usethis::proj_get(), "vignettes",  "_common.R"))
 ```
 
+# References
+
+* [Mastering Spark with R](https://therinspark.com/)
