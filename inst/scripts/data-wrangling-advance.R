@@ -62,7 +62,12 @@ class(results)
 
 
 # Joins -------------------------------------------------------------------
-
+tbl_joined <- dplyr::left_join(
+    dplyr::tbl(spark_conn, "flights"),
+    dplyr::tbl(spark_conn, "airlines"),
+    by = "carrier"
+)
+dim(tbl_joined)
 
 
 # Teardown ----------------------------------------------------------------
