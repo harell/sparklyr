@@ -4,7 +4,7 @@ FROM tidylab/package:4.2.0
 # Install Spark ----------------------------------------------------------------
 # https://spark.rstudio.com/examples/stand-alone-aws/
 # RUN R -q -e "install_cran('sparklyr', dependencies = TRUE)"
-ARG SPARK_VERSION=2.4.0
+ARG SPARK_VERSION=2.4.4
 ARG HADOOP_VERSION=2.7
 #RUN R -q -e "print(Sys.getenv('SPARK_VERSION'))"
 #RUN R -q -e "sparklyr::spark_install(Sys.getenv('SPARK_VERSION'), Sys.getenv('HADOOP_VERSION'), verbose = TRUE)"

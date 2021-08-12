@@ -1,8 +1,8 @@
 #' sparklyr has two "native" interfaces. Native means that they call Java or
 #' Scala code to access Spark libraries directly, without any conversion to SQL.
 #'
-#' * sparklyr supports the Spark DataFrame API with functions that have an sdf_
-#' prefix.
+#' * sparklyr supports the Spark DataFrame API with functions that have an
+#' sdf_prefix.
 #'
 #' * It also supports access to Spark's machine learning library, MLlib, with
 #' "feature transformation" functions that begin ft_, and "machine learning"
@@ -16,7 +16,7 @@
 #'
 # Setup -------------------------------------------------------------------
 pkgload::load_all()
-spark$install(version = "2.4.0")
+spark$install(version = "2.4.4")
 spark_conn <- sparklyr::spark_connect(
     master = 'local',
     config = sparklyr::spark_config(file.path(".", "inst", "configurations", "spark.yml"))
@@ -45,11 +45,27 @@ dplyr::src_tbls(spark_conn)
     |> dplyr::collect()
     # Convert was_delayed to logical
     |> dplyr::mutate(was_delayed = as.logical(was_delayed))
+    # Focus on the amended columns
+    |> dplyr::select(arr_delay, was_delayed)
 )
 
 
 # Transforming continuous variables into categorical ----------------------
-
+(
+    flights <- dplyr::tbl(spark_conn, "flights")
+    # Bucketize month to quarter using splits vector
+    # |   Q0  |   Q1  |   Q2  |     Q3   |
+    # 0 ------4-------7-------10---------13
+    # | 1,2,3 | 4,5,6 | 7,8,9 | 10,11,12 |
+    |> sparklyr::ft_bucketizer("month", "quarter", c(0,4,7,10,13))
+    # Collect the result
+    |> dplyr::collect()
+    # Convert decade to factor using decade_labels
+    |> dplyr::mutate(quarter = ordered(quarter, levels = 0:3, labels = 1:4))
+    # Focus on the amended columns
+    |> dplyr::select(month, quarter)
+    |> dplyr::arrange(month)
+)
 
 
 
