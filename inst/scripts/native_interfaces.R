@@ -13,7 +13,8 @@
 #' DoubleType outputs.
 #' * it is up to the you to convert logical or integer data into numeric data
 #' and back again.
-#'
+
+
 # Setup -------------------------------------------------------------------
 pkgload::load_all()
 spark$install(version = "2.4.4")
@@ -80,6 +81,22 @@ q <- 10
     |> dplyr::mutate(distance_bin = ordered(distance_bin, levels = 0:(q-1), labels = paste0((1:q)*10, "%")))
     # Focus on the amended columns
     |> dplyr::select(distance, distance_bin)
+)
+
+
+# Tokenization ------------------------------------------------------------
+(
+    planes <- dplyr::tbl(spark_conn, "planes")
+    # Tokenize title to words
+    |> sparklyr::ft_tokenizer("manufacturer", "company")
+    # Collect the result
+    |> dplyr::collect()
+    # Flatten the company column
+    |> dplyr::mutate(company = lapply(company, as.character))
+    # Unnest the list column
+    |> tidyr::unnest(cols = c(company))
+    # Focus on the amended columns
+    |> dplyr::select(manufacturer, company)
 )
 
 
