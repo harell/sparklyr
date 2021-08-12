@@ -50,7 +50,7 @@ dplyr::src_tbls(spark_conn)
 )
 
 
-# Transforming continuous variables into categorical ----------------------
+# Transforming continuous variables to categorical via cut ----------------
 (
     flights <- dplyr::tbl(spark_conn, "flights")
     # Bucketize month to quarter using splits vector
@@ -60,13 +60,27 @@ dplyr::src_tbls(spark_conn)
     |> sparklyr::ft_bucketizer("month", "quarter", c(0,4,7,10,13))
     # Collect the result
     |> dplyr::collect()
-    # Convert decade to factor using decade_labels
-    |> dplyr::mutate(quarter = ordered(quarter, levels = 0:3, labels = 1:4))
+    # Convert quarter to categorical
+    |> dplyr::mutate(quarter = ordered(quarter, levels = 0:3, labels = paste0("Q", 1:4)))
     # Focus on the amended columns
     |> dplyr::select(month, quarter)
     |> dplyr::arrange(month)
 )
 
+
+# Transforming continuous variables into categorical via quantiles --------
+q <- 10
+(
+    flights <- dplyr::tbl(spark_conn, "flights")
+    # Bucketize distance
+    |> sparklyr::ft_quantile_discretizer("distance", "distance_bin", q)
+    # Collect the result
+    |> dplyr::collect()
+    # Convert distance_bin to categorical
+    |> dplyr::mutate(distance_bin = ordered(distance_bin, levels = 0:(q-1), labels = paste0((1:q)*10, "%")))
+    # Focus on the amended columns
+    |> dplyr::select(distance, distance_bin)
+)
 
 
 # Teardown ----------------------------------------------------------------
