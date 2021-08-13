@@ -1,7 +1,7 @@
 # <https://spark.rstudio.com/dplyr/>
 # Setup -------------------------------------------------------------------
 pkgload::load_all()
-spark$install(version = "2.4.0")
+spark$install(version = "2.4.4")
 spark_conn <- sparklyr::spark_connect(
     master = 'local',
     config = sparklyr::spark_config(file.path(".", "inst", "configurations", "spark.yml"))
