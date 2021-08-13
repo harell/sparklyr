@@ -118,5 +118,20 @@ q <- 10
     |> dplyr::collect()
 )
 
+
+# Training/testing partitions ---------------------------------------------
+(
+    flights_splits <- dplyr::tbl(spark_conn, "flights")
+    # Partition into training and testing sets
+    |> sparklyr::sdf_partition(training = 0.7, testing = 0.3, seed = 1057)
+)
+
+# Get the dimensions of the training set
+dim(flights_splits$training)
+
+# Get the dimensions of the testing set
+dim(flights_splits$testing)
+
+
 # Teardown ----------------------------------------------------------------
 sparklyr::spark_disconnect(sc = spark_conn)
