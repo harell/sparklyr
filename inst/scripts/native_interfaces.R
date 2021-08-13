@@ -32,7 +32,14 @@ for(dataset_name in dataset_names) dplyr::copy_to(
     name = dataset_name,
     overwrite = TRUE
 )
-dplyr::src_tbls(spark_conn)
+
+
+# Exploring Spark data types ----------------------------------------------
+(
+    schema <- dplyr::tbl(spark_conn, "flights")
+    |> sparklyr::sdf_schema()
+    |> dplyr::bind_rows()
+)
 
 
 # Transforming continuous variables to logical ----------------------------
@@ -100,9 +107,16 @@ q <- 10
 )
 
 
+# Shrinking the data by sampling ------------------------------------------
+(
+    flights <- dplyr::tbl(spark_conn, "flights")
+    # Sample the data without replacement
+    |> sparklyr::sdf_sample(fraction = 0.01, replacement = FALSE, seed = 1052)
+    # Compute the result
+    |> dplyr::compute("sample_flights")
+    # # Collect the result
+    |> dplyr::collect()
+)
+
 # Teardown ----------------------------------------------------------------
 sparklyr::spark_disconnect(sc = spark_conn)
-
-
-
-
