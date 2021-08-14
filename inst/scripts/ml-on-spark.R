@@ -10,7 +10,7 @@ n <- 1e4
 m <- 4
 w <- runif(m, -0.5, 0.5)
 suppressMessages(
-    dummy_data <- purrr::map_dfc(rep(n, m), rnorm)
+    synthetic_data <- purrr::map_dfc(rep(n, m), rnorm)
     |> dplyr::rename_with(~ stringr::str_c("X", .x) |> stringr::str_remove_all("\\."))
     |> dplyr::rowwise()
     |> dplyr::mutate(y = sum(w * dplyr::c_across()))
@@ -18,36 +18,14 @@ suppressMessages(
 )
 
 
-# Working with parquet files ----------------------------------------------
+# Export Dataset ----------------------------------------------------------
 path_temp <- tempfile("spark-"); fs::dir_create(path_temp)
-system.time(readr::write_csv(dummy_data, file.path(path_temp, "data.csv")))         # 0.12 sec
-system.time(arrow::write_dataset(dummy_data, file.path(path_temp, "data.parquet"))) # 0.01 sec
+arrow::write_parquet(x = synthetic_data, sink = file.path(path_temp, "data.parquet"))
 
-path_temp |> file.path("data.csv") |> fs::file_size()                       # 962K
-path_temp |> file.path("data.parquet", "part-0.parquet") |> fs::file_size() # 705K
 
-# # Copying data into Spark -------------------------------------------------
-# dataset_names <- data(package = "nycflights13") |> purrr::pluck("results") |> dplyr::as_tibble() |> dplyr::pull("Item")
-# for(dataset_name in dataset_names) dplyr::copy_to(
-#     dest = spark_conn,
-#     df = eval(parse(text = paste0("nycflights13::", dataset_name))),
-#     name = dataset_name,
-#     overwrite = TRUE
-# )
-#
-#
-# # Exploring Spark data types ----------------------------------------------
-# (
-#     schema <- dplyr::tbl(spark_conn, "flights")
-#     |> sparklyr::sdf_schema()
-#     |> dplyr::bind_rows()
-# )
-#
-#
-# # Transforming continuous variables to logical ----------------------------
-# (
-#     flights <- dplyr::tbl(spark_conn, "flights")
-#
+# Import data to Spark ----------------------------------------------------
+tbl_spark <- sparklyr::spark_read_parquet(spark_conn, name = "SYNTETIC_DATA", path_temp)
+
 
 # Teardown ----------------------------------------------------------------
 unlink(path_temp)
