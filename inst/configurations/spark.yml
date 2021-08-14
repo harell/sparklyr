@@ -1,4 +1,10 @@
 default:
+  spark.executor.memory: '8g'
+  executor.Memory.cluster: '6g'
+  executor.Memory.local: '6g'  # actually dont think this is tuneable in local mode, https://therinspark.com/tuning.html
+  driver.memory: '250g'
+  driverMaxResultSize: '250g'
+
   # local-only configuration
   spark.env.SPARK_LOCAL_IP.local: 127.0.0.1
 
