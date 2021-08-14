@@ -15,16 +15,24 @@ suppressMessages(
     |> dplyr::rowwise()
     |> dplyr::mutate(y = sum(w * dplyr::c_across()))
     |> dplyr::ungroup()
+    |> tibble::rowid_to_column("id")
 )
 
 
 # Export Dataset ----------------------------------------------------------
 path_temp <- tempfile("spark-"); fs::dir_create(path_temp)
-arrow::write_parquet(x = synthetic_data, sink = file.path(path_temp, "data.parquet"))
+synthetic_data |> dplyr::select(id, dplyr::starts_with("X")) |> arrow::write_parquet(sink = file.path(path_temp, "X.parquet"))
+synthetic_data |> dplyr::select(id, dplyr::starts_with("y")) |> arrow::write_parquet(sink = file.path(path_temp, "y.parquet"))
 
 
 # Import data to Spark ----------------------------------------------------
-tbl_spark <- sparklyr::spark_read_parquet(spark_conn, name = "SYNTETIC_DATA", path_temp)
+tbl_spark_X <- sparklyr::spark_read_parquet(spark_conn, name = "X", file.path(path_temp, "X.parquet"))
+tbl_spark_y <- sparklyr::spark_read_parquet(spark_conn, name = "y", file.path(path_temp, "y.parquet"))
+
+
+# Join Databases ----------------------------------------------------------
+tbl_spark <- dplyr::left_join(tbl_spark_X, tbl_spark_y, by = "id")
+# object.size(tbl_spark) < object.size(synthetic_data)
 
 
 # Teardown ----------------------------------------------------------------
