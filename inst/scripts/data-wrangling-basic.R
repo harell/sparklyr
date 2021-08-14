@@ -1,6 +1,6 @@
 # Setup -------------------------------------------------------------------
 pkgload::load_all()
-spark$install(version = "2.4.0")
+spark$install(version = "2.4.4")
 spark_conn <- sparklyr::spark_connect(
     master = 'local',
     config = sparklyr::spark_config(file.path(".", "inst", "configurations", "spark.yml"))
@@ -48,3 +48,8 @@ tbl_spark |> dplyr::mutate(kpg = 1.60934 * mpg)
 
 ## Summarising columns
 tbl_spark |> dplyr::group_by(gear) |> dplyr::summarise(mpg = mean(mpg, na.rm = TRUE))
+
+
+# Teardown ----------------------------------------------------------------
+sparklyr::spark_disconnect(sc = spark_conn)
+

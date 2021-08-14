@@ -44,6 +44,7 @@ spark$install <- function(version = "2.3.0"){
     invisible()
 }
 
+
 # is_installed ------------------------------------------------------------
 spark$is_installed <- function(version){
     spark_versions <- sparklyr::spark_installed_versions()[[1]]
