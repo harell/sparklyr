@@ -3,7 +3,7 @@ Type: Package
 Title: Apache Spark in R
 Description: Playground for sparklyr.
 URL: https://github.com/harell/sparklyr
-Version: 0.1.0
+Version: 0.2.0
 Date: 2021-08-01
 Authors@R: c(person("Harel", "Lustiger", email = "tidylab@gmail.com", role = c("aut", "cre")))
 Maintainer: Harel Lustiger <tidylab@gmail.com>
